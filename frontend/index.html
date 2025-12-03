@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYC Taxi Data Analytics Portal</title>
+    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .feature-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .feature-title {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .feature-description {
+            background: #e8eaf6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .feature-description h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .feature-description p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .insight {
+            background: #fff3cd;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .insight strong {
+            color: #856404;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 15px;
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .metric-box {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #667eea;
+        }
+
+        .metric-box .value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .metric-box .label {
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚕 NYC Taxi Data Analytics Portal</h1>
+            <div class="subtitle">
+                CS 554 - Database Systems | 24M+ Manhattan Taxi Trips (Jan-Oct 2025)
+            </div>
+        </header>
+
+        <!-- Overall Statistics -->
+        <div id="overall-stats" class="stats-grid"></div>
+
+        <!-- Feature 1: Zone Popularity -->
+        <div class="feature-section">
+            <div class="feature-title">
+                <span class="feature-number">1</span>
+                Zone Popularity Ranking - Spatial Demand Analysis
+            </div>
+            <div class="feature-description">
+                <h4>📍 What This Shows</h4>
+                <p>Identifies Manhattan's most active taxi zones by analyzing pickup and dropoff volumes. This reveals urban mobility hotspots, business districts, and residential commuter patterns.</p>
+                <div class="insight">
+                    <strong>Business Value:</strong> Fleet operators can optimize vehicle positioning, urban planners can identify high-demand areas for infrastructure investment, and real estate developers can assess location desirability.
+                </div>
+            </div>
+            <div class="chart-container" id="zone-chart"></div>
+            <div class="chart-container" id="zone-comparison"></div>
+        </div>
+
+        <!-- Feature 2: Temporal Demand -->
+        <div class="feature-section">
+            <div class="feature-title">
+                <span class="feature-number">2</span>
+                Temporal Demand Patterns - Time-Series Analysis
+            </div>
+            <div class="feature-description">
+                <h4>⏰ What This Shows</h4>
+                <p>Analyzes how taxi demand varies by hour and day of week, revealing commute patterns, nightlife activity, and weekend vs. weekday behavior differences.</p>
+                <div class="insight">
+                    <strong>Key Finding:</strong> Rush hour peaks (8-9 AM, 6-7 PM) show 2-3x higher demand than off-peak hours. Weekend demand peaks later (10 PM-2 AM) due to nightlife activity.
+                </div>
+            </div>
+            <div class="chart-container" id="temporal-hourly"></div>
+            <div class="chart-container" id="temporal-heatmap"></div>
+        </div>
+
+        <!-- Feature 3: Fare Structure -->
+        <div class="feature-section">
+            <div class="feature-title">
+                <span class="feature-number">3</span>
+                Fare Structure Breakdown - Economic Component Analysis
+            </div>
+            <div class="feature-description">
+                <h4>💰 What This Shows</h4>
+                <p>Decomposes total fare into individual components (base fare, tips, taxes, surcharges) to understand cost structure and government revenue streams.</p>
+                <div class="insight">
+                    <strong>Economic Impact:</strong> Surcharges (congestion, MTA tax, improvement fee) represent 15-20% of total fare, generating significant public revenue while influencing customer pricing perception.
+                </div>
+            </div>
+            <div class="chart-container" id="fare-pie"></div>
+            <div class="chart-container" id="fare-surcharges"></div>
+        </div>
+
+        <!-- Feature 4: Airport Trips -->
+        <div class="feature-section">
+            <div class="feature-title">
+                <span class="feature-number">4</span>
+                Airport Trip Analysis - Hub Connectivity Study
+            </div>
+            <div class="feature-description">
+                <h4>✈️ What This Shows</h4>
+                <p>Compares airport trips (JFK, LGA, EWR) vs. regular Manhattan trips, analyzing volume, fares, distances, and origin zones for airport passengers.</p>
+                <div class="insight">
+                    <strong>Travel Pattern:</strong> Airport trips have 3-4x higher average fares ($50-65 vs. $15-18) and originate primarily from Midtown hotels and business districts.
+                </div>
+            </div>
+            <div class="chart-container" id="airport-comparison"></div>
+            <div class="chart-container" id="airport-origins"></div>
+        </div>
+
+        <!-- Feature 5: OD Flows -->
+        <div class="feature-section">
+            <div class="feature-title">
+                <span class="feature-number">5</span>
+                Origin-Destination Flow Patterns - Route Network Analysis
+            </div>
+            <div class="feature-description">
+                <h4>🔄 What This Shows</h4>
+                <p>Maps the most common taxi routes between Manhattan neighborhoods, revealing commuting corridors, tourism patterns, and intra-borough mobility. Analyzes route characteristics including distance, duration, and efficiency metrics.</p>
+                <div class="insight">
+                    <strong>Network Effect:</strong> Top routes show strong intra-neighborhood patterns (same-zone trips dominate), north-south commuter corridors between UES and Midtown, and efficiency variations based on traffic and distance.
+                </div>
+            </div>
+            <div class="chart-container" id="od-table"></div>
+            <div class="chart-container" id="od-flow-analysis"></div>
+        </div>
+
+        <!-- Feature 6: Vendor Performance -->
+        <div class="feature-section">
+            <div class="feature-title">
+                <span class="feature-number">6</span>
+                Vendor Market Share & Performance - Competitive Analysis
+            </div>
+            <div class="feature-description">
+                <h4>🏢 What This Shows</h4>
+                <p>Compares taxi vendors (CMT vs. VeriFone) by market share, service quality metrics (avg fare, distance, duration), and operational efficiency.</p>
+                <div class="insight">
+                    <strong>Market Dynamics:</strong> VeriFone dominates with 75-80% market share. Performance metrics are remarkably similar across vendors, suggesting standardized service quality and regulated pricing.
+                </div>
+            </div>
+            <div class="chart-container" id="vendor-market"></div>
+            <div class="chart-container" id="vendor-performance"></div>
+        </div>
+
+        <!-- Feature 7: Payment & Tipping -->
+        <div class="feature-section">
+            <div class="feature-title">
+                <span class="feature-number">7</span>
+                Payment Method & Tipping Behavior - Transaction Psychology
+            </div>
+            <div class="feature-description">
+                <h4>💳 What This Shows</h4>
+                <p>Analyzes payment method distribution (credit card, cash, dispute, no charge) and their impact on tipping behavior. Shows how digital payments influence gratuity patterns and driver income.</p>
+                <div class="insight">
+                    <strong>Behavioral Economics:</strong> Credit card users tip in 95% of trips with 26.5% average tip rate, while cash payments show 0% recorded tips. Payment method choice has dramatic impact on driver earnings.
+                </div>
+            </div>
+            <div class="chart-container" id="payment-distribution"></div>
+            <div class="chart-container" id="payment-analysis"></div>
+        </div>
+
+        <!-- Feature 8: Anomalies -->
+        <div class="feature-section">
+            <div class="feature-title">
+                <span class="feature-number">8</span>
+                Outlier & Anomaly Detection - Data Quality & Edge Cases
+            </div>
+            <div class="feature-description">
+                <h4>🔍 What This Shows</h4>
+                <p>Identifies unusual trips (abnormally high fares, suspicious routes, data quality issues) using statistical outlier detection methods.</p>
+                <div class="insight">
+                    <strong>Quality Control:</strong> 2-4% of trips show anomalies including surge pricing ($50+/mile), data entry errors, or special circumstances (emergencies, VIP service). Critical for data cleaning and fraud detection.
+                </div>
+            </div>
+            <div class="chart-container" id="anomaly-summary"></div>
+            <div class="chart-container" id="anomaly-examples"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        // Helper functions
+        function formatNumber(num) {
+            return new Intl.NumberFormat('en-US').format(num);
+        }
+
+        function formatCurrency(num) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(num);
+        }
+
+        // Load overall statistics
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                const data = await response.json();
+
+                document.getElementById('overall-stats').innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-value">${formatNumber(data.total_trips)}</div>
+                        <div class="stat-label">Total Trips</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${formatCurrency(data.avg_fare)}</div>
+                        <div class="stat-label">Avg Fare</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${data.avg_distance} mi</div>
+                        <div class="stat-label">Avg Distance</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${data.avg_duration_min} min</div>
+                        <div class="stat-label">Avg Duration</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${formatCurrency(data.total_revenue)}</div>
+                        <div class="stat-label">Total Revenue</div>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('overall-stats').innerHTML =
+                    `<div class="error">Error loading statistics. Make sure the backend is running on port 8000.</div>`;
+            }
+        }
+
+        // Feature 1: Zone Popularity - Enhanced with pickup/dropoff comparison
+        async function loadZoneData() {
+            try {
+                // Load top pickup zones
+                const pickupResponse = await fetch(`${API_BASE}/api/zones/top-pickup?limit=15`);
+                const pickupData = await pickupResponse.json();
+
+                // Load top dropoff zones
+                const dropoffResponse = await fetch(`${API_BASE}/api/zones/top-dropoff?limit=15`);
+                const dropoffData = await dropoffResponse.json();
+
+                // Main chart: Top pickup zones
+                const zones = pickupData.zones.map(z => z.zone);
+                const counts = pickupData.zones.map(z => z.pickup_count);
+
+                const trace1 = {
+                    x: counts,
+                    y: zones,
+                    type: 'bar',
+                    orientation: 'h',
+                    marker: {
+                        color: counts,
+                        colorscale: 'Viridis',
+                        showscale: true,
+                        colorbar: { title: 'Trips' }
+                    },
+                    text: counts.map(c => formatNumber(c)),
+                    textposition: 'outside'
+                };
+
+                const layout1 = {
+                    title: 'Top 15 Pickup Zones by Trip Volume',
+                    xaxis: { title: 'Number of Pickups' },
+                    yaxis: { title: '', automargin: true },
+                    height: 600,
+                    margin: { l: 200, r: 100 }
+                };
+
+                Plotly.newPlot('zone-chart', [trace1], layout1);
+
+                // Comparison chart
+                const comparisonHTML = `
+                    <h3>Pickup vs. Dropoff Zone Comparison</h3>
+                    <div class="metric-grid">
+                        <div class="metric-box">
+                            <div class="value">${pickupData.zones[0].zone}</div>
+                            <div class="label">Most Popular Pickup</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="value">${formatNumber(pickupData.zones[0].pickup_count)}</div>
+                            <div class="label">Top Zone Trips</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="value">${dropoffData.zones[0].zone}</div>
+                            <div class="label">Most Popular Dropoff</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="value">${formatCurrency(pickupData.zones[0].avg_fare)}</div>
+                            <div class="label">Avg Fare (Top Zone)</div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('zone-comparison').innerHTML = comparisonHTML;
+
+            } catch (error) {
+                document.getElementById('zone-chart').innerHTML =
+                    `<div class="error">Error loading zone data: ${error.message}</div>`;
+            }
+        }
+
+        // Feature 2: Temporal Demand - Enhanced with heatmap
+        async function loadTemporalData() {
+            try {
+                // Hourly demand
+                const hourlyResponse = await fetch(`${API_BASE}/api/temporal/hourly`);
+                const hourlyData = await hourlyResponse.json();
+
+                const hours = hourlyData.hourly_data.map(h => h.hour);
+                const trips = hourlyData.hourly_data.map(h => h.total_trips);
+                const avgFares = hourlyData.hourly_data.map(h => h.avg_fare);
+
+                const trace1 = {
+                    x: hours,
+                    y: trips,
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    name: 'Trip Count',
+                    line: { color: '#667eea', width: 3 },
+                    marker: { size: 8 },
+                    yaxis: 'y'
+                };
+
+                const trace2 = {
+                    x: hours,
+                    y: avgFares,
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    name: 'Avg Fare',
+                    line: { color: '#764ba2', width: 3 },
+                    marker: { size: 8 },
+                    yaxis: 'y2'
+                };
+
+                const layout1 = {
+                    title: 'Hourly Trip Demand and Fare Patterns',
+                    xaxis: { title: 'Hour of Day (0-23)' },
+                    yaxis: {
+                        title: 'Number of Trips',
+                        side: 'left'
+                    },
+                    yaxis2: {
+                        title: 'Average Fare ($)',
+                        side: 'right',
+                        overlaying: 'y'
+                    },
+                    height: 400,
+                    showlegend: true
+                };
+
+                Plotly.newPlot('temporal-hourly', [trace1, trace2], layout1);
+
+                // Heatmap - FIXED: Use correct field names
+                const heatmapResponse = await fetch(`${API_BASE}/api/temporal/heatmap`);
+                const heatmapData = await heatmapResponse.json();
+
+                const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                const hoursArr = Array.from({length: 24}, (_, i) => i);
+
+                // Create matrix with correct data structure
+                const heatmapMatrix = dayNames.map((_, dayIdx) => {
+                    return hoursArr.map(hour => {
+                        const cell = heatmapData.heatmap_data.find(d => d.day === dayIdx && d.hour === hour);
+                        return cell ? cell.trips : 0;
+                    });
+                });
+
+                const traceHeatmap = {
+                    z: heatmapMatrix,
+                    x: hoursArr,
+                    y: dayNames,
+                    type: 'heatmap',
+                    colorscale: [
+                        [0, '#440154'],
+                        [0.25, '#31688e'],
+                        [0.5, '#35b779'],
+                        [0.75, '#fde724'],
+                        [1, '#fde724']
+                    ],
+                    colorbar: { title: 'Trip Count' }
+                };
+
+                const layout2 = {
+                    title: 'Trip Demand Heatmap: Day × Hour',
+                    xaxis: { title: 'Hour of Day' },
+                    yaxis: { title: 'Day of Week' },
+                    height: 400
+                };
+
+                Plotly.newPlot('temporal-heatmap', [traceHeatmap], layout2);
+
+            } catch (error) {
+                document.getElementById('temporal-hourly').innerHTML =
+                    `<div class="error">Error loading temporal data: ${error.message}</div>`;
+            }
+        }
+
+        // Feature 3: Fare Structure - FIXED surcharge data
+        async function loadFareData() {
+            try {
+                const response = await fetch(`${API_BASE}/api/fare-structure/breakdown`);
+                const data = await response.json();
+
+                // Pie chart
+                const components = [
+                    'Base Fare', 'Tip', 'Tolls', 'MTA Tax',
+                    'Congestion', 'Extra', 'Improvement', 'Airport Fee'
+                ];
+                const values = [
+                    data.components.base_fare,
+                    data.components.tip,
+                    data.components.tolls,
+                    data.components.mta_tax,
+                    data.components.congestion_surcharge,
+                    data.components.extra,
+                    data.components.improvement_surcharge,
+                    data.components.airport_fee
+                ];
+
+                const tracePie = {
+                    labels: components,
+                    values: values,
+                    type: 'pie',
+                    marker: {
+                        colors: ['#667eea', '#764ba2', '#f093fb', '#4facfe',
+                                '#00f2fe', '#43e97b', '#fa709a', '#fee140']
+                    },
+                    textinfo: 'label+percent',
+                    textposition: 'outside'
+                };
+
+                const layout1 = {
+                    title: 'Average Fare Component Breakdown',
+                    height: 500
+                };
+
+                Plotly.newPlot('fare-pie', [tracePie], layout1);
+
+                // Surcharge analysis - FIXED: Use correct field names
+                const surchargeResponse = await fetch(`${API_BASE}/api/fare-structure/surcharges`);
+                const surchargeData = await surchargeResponse.json();
+
+                const surchargeHTML = `
+                    <h3>Surcharge Impact Analysis</h3>
+                    <div class="metric-grid">
+                        <div class="metric-box">
+                            <div class="value">${formatNumber(surchargeData.surcharge_counts.congestion)}</div>
+                            <div class="label">Congestion Surcharge Trips</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="value">${surchargeData.surcharge_percentages.congestion}%</div>
+                            <div class="label">Congestion Surcharge %</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="value">${formatNumber(surchargeData.surcharge_counts.tolls)}</div>
+                            <div class="label">Tolls Applied</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="value">${formatNumber(surchargeData.surcharge_counts.airport_fee)}</div>
+                            <div class="label">Airport Fee Trips</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; color: #666;">
+                        <strong>Revenue Impact:</strong> Surcharges contribute approximately $${
+                            (data.components.mta_tax + data.components.congestion_surcharge +
+                             data.components.improvement_surcharge + data.components.airport_fee).toFixed(2)
+                        } per trip on average, generating substantial public revenue for transportation infrastructure. ${surchargeData.surcharge_percentages.congestion}% of trips include congestion surcharge.
+                    </p>
+                `;
+
+                document.getElementById('fare-surcharges').innerHTML = surchargeHTML;
+
+            } catch (error) {
+                document.getElementById('fare-pie').innerHTML =
+                    `<div class="error">Error loading fare data: ${error.message}</div>`;
+            }
+        }
+
+        // Feature 4: Airport Trips - FIXED field names
+        async function loadAirportData() {
+            try {
+                const response = await fetch(`${API_BASE}/api/airport/comparison`);
+                const data = await response.json();
+
+                const types = data.comparison.map(c => c.trip_type);
+                const counts = data.comparison.map(c => c.trip_count);
+                const fares = data.comparison.map(c => c.avg_fare);
+
+                const trace1 = {
+                    x: types,
+                    y: counts,
+                    type: 'bar',
+                    name: 'Trip Count',
+                    marker: { color: '#667eea' },
+                    text: counts.map(c => formatNumber(c)),
+                    textposition: 'outside'
+                };
+
+                const trace2 = {
+                    x: types,
+                    y: fares,
+                    type: 'bar',
+                    name: 'Avg Fare',
+                    yaxis: 'y2',
+                    marker: { color: '#764ba2' },
+                    text: fares.map(f => formatCurrency(f)),
+                    textposition: 'outside'
+                };
+
+                const layout1 = {
+                    title: 'Airport vs Regular Trip Comparison',
+                    yaxis: { title: 'Trip Count' },
+                    yaxis2: {
+                        title: 'Average Fare ($)',
+                        overlaying: 'y',
+                        side: 'right'
+                    },
+                    height: 400
+                };
+
+                Plotly.newPlot('airport-comparison', [trace1, trace2], layout1);
+
+                // Top airport origins - FIXED: Use 'zone' not 'origin_zone'
+                const originsResponse = await fetch(`${API_BASE}/api/airport/top-origins?limit=10`);
+                const originsData = await originsResponse.json();
+
+                let originsHTML = `
+                    <h3>Top 10 Origin Zones for Airport Trips</h3>
+                    <table>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Origin Zone</th>
+                            <th>Airport Trips</th>
+                            <th>Avg Fare</th>
+                            <th>Avg Distance</th>
+                        </tr>
+                `;
+
+                originsData.top_origins.forEach((origin, idx) => {
+                    originsHTML += `
+                        <tr>
+                            <td><strong>${idx + 1}</strong></td>
+                            <td>${origin.zone}</td>
+                            <td>${formatNumber(origin.trip_count)}</td>
+                            <td>${formatCurrency(origin.avg_fare)}</td>
+                            <td>${origin.avg_distance} mi</td>
+                        </tr>
+                    `;
+                });
+
+                originsHTML += '</table>';
+                document.getElementById('airport-origins').innerHTML = originsHTML;
+
+            } catch (error) {
+                document.getElementById('airport-comparison').innerHTML =
+                    `<div class="error">Error loading airport data: ${error.message}</div>`;
+            }
+        }
+
+        // Feature 5: OD Flows - ENHANCED with better flow pattern analysis
+        async function loadODFlowData() {
+            try {
+                const response = await fetch(`${API_BASE}/api/od-flows/top-routes?limit=20`);
+                const data = await response.json();
+
+                let tableHTML = `
+                    <h3>Top 20 Most Popular Routes (Origin → Destination)</h3>
+                    <table>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Origin Zone</th>
+                            <th>Destination Zone</th>
+                            <th>Total Trips</th>
+                            <th>Avg Fare</th>
+                            <th>Avg Distance</th>
+                            <th>Avg Duration</th>
+                            <th>$/Mile</th>
+                        </tr>
+                `;
+
+                data.top_routes.forEach((route, idx) => {
+                    const farePerMile = (route.avg_fare / route.avg_distance).toFixed(2);
+                    tableHTML += `
+                        <tr>
+                            <td><strong>${idx + 1}</strong></td>
+                            <td>${route.origin}</td>
+                            <td>${route.destination}</td>
+                            <td>${formatNumber(route.trip_count)}</td>
+                            <td>${formatCurrency(route.avg_fare)}</td>
+                            <td>${route.avg_distance} mi</td>
+                            <td>${route.avg_duration_min} min</td>
+                            <td>${formatCurrency(farePerMile)}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += '</table>';
+                document.getElementById('od-table').innerHTML = tableHTML;
+
+                // Flow pattern analysis - ENHANCED
+                const intraZone = data.top_routes.filter(r => r.origin === r.destination).length;
+                const crossZone = data.top_routes.filter(r => r.origin !== r.destination).length;
+
+                const shortRoutes = data.top_routes.filter(r => r.avg_distance < 1.5).length;
+                const mediumRoutes = data.top_routes.filter(r => r.avg_distance >= 1.5 && r.avg_distance < 3).length;
+                const longRoutes = data.top_routes.filter(r => r.avg_distance >= 3).length;
+
+                const avgSpeed = data.top_routes.reduce((sum, r) =>
+                    sum + (r.avg_distance / (r.avg_duration_min / 60)), 0) / data.top_routes.length;
+
+                const flowHTML = `
+                    <h3>Route Network Analysis</h3>
+                    <div class="metric-grid">
+                        <div class="metric-box">
+                            <div class="value">${intraZone}</div>
+                            <div class="label">Intra-Zone Routes (Same Origin/Dest)</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="value">${crossZone}</div>
+                            <div class="label">Cross-Zone Routes</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="value">${shortRoutes} / ${mediumRoutes} / ${longRoutes}</div>
+                            <div class="label">Short / Medium / Long Distance</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="value">${avgSpeed.toFixed(1)} mph</div>
+                            <div class="label">Avg Speed (Top Routes)</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; color: #666; line-height: 1.8;">
+                        <strong>Flow Pattern Insights:</strong><br>
+                        • <strong>Intra-Zone Dominance:</strong> ${((intraZone/20)*100).toFixed(0)}% of top routes are within same zone, indicating strong local mobility<br>
+                        • <strong>Distance Distribution:</strong> Short trips (<1.5mi): ${shortRoutes}, Medium (1.5-3mi): ${mediumRoutes}, Long (>3mi): ${longRoutes}<br>
+                        • <strong>Network Efficiency:</strong> Average speed of ${avgSpeed.toFixed(1)} mph reflects Manhattan traffic conditions and stop patterns
+                    </p>
+                `;
+
+                document.getElementById('od-flow-analysis').innerHTML = flowHTML;
+
+            } catch (error) {
+                document.getElementById('od-table').innerHTML =
+                    `<div class="error">Error loading OD flow data: ${error.message}</div>`;
+            }
+        }
+
+        // Feature 6: Vendor Performance - Enhanced comparison
+        async function loadVendorData() {
+            try {
+                const response = await fetch(`${API_BASE}/api/vendors/performance`);
+                const data = await response.json();
+
+                // Market share pie chart
+                const vendors = data.vendors.map(v => v.vendor_name);
+                const shares = data.vendors.map(v => v.market_share_pct);
+
+                const tracePie = {
+                    labels: vendors,
+                    values: shares,
+                    type: 'pie',
+                    marker: {
+                        colors: ['#667eea', '#764ba2', '#f093fb']
+                    },
+                    textinfo: 'label+percent',
+                    text: shares.map(s => `${s.toFixed(1)}%`),
+                    textposition: 'outside'
+                };
+
+                const layout1 = {
+                    title: 'Vendor Market Share Distribution',
+                    height: 400
+                };
+
+                Plotly.newPlot('vendor-market', [tracePie], layout1);
+
+                // Performance metrics comparison
+                const avgFares = data.vendors.map(v => v.avg_fare);
+                const avgDistances = data.vendors.map(v => v.avg_distance);
+                const avgDurations = data.vendors.map(v => v.avg_duration_min);
+
+                const trace1 = {
+                    x: vendors,
+                    y: avgFares,
+                    type: 'bar',
+                    name: 'Avg Fare ($)',
+                    marker: { color: '#667eea' },
+                    text: avgFares.map(f => formatCurrency(f)),
+                    textposition: 'outside'
+                };
+
+                const trace2 = {
+                    x: vendors,
+                    y: avgDistances,
+                    type: 'bar',
+                    name: 'Avg Distance (mi)',
+                    marker: { color: '#764ba2' },
+                    text: avgDistances.map(d => `${d.toFixed(2)} mi`),
+                    textposition: 'outside'
+                };
+
+                const trace3 = {
+                    x: vendors,
+                    y: avgDurations,
+                    type: 'bar',
+                    name: 'Avg Duration (min)',
+                    marker: { color: '#f093fb' },
+                    text: avgDurations.map(d => `${d.toFixed(1)} min`),
+                    textposition: 'outside'
+                };
+
+                const layout2 = {
+                    title: 'Vendor Performance Metrics Comparison',
+                    barmode: 'group',
+                    height: 400
+                };
+
+                Plotly.newPlot('vendor-performance', [trace1, trace2, trace3], layout2);
+
+            } catch (error) {
+                document.getElementById('vendor-market').innerHTML =
+                    `<div class="error">Error loading vendor data: ${error.message}</div>`;
+            }
+        }
+
+        // Feature 7: Payment & Tipping - ENHANCED with all payment types
+        async function loadPaymentData() {
+            try {
+                const response = await fetch(`${API_BASE}/api/payment-tipping/by-payment-type`);
+                const data = await response.json();
+
+                const payments = data.payment_types.map(p => p.payment_type);
+                const tipPcts = data.payment_types.map(p => p.avg_tip_pct || 0);
+                const tipFreqs = data.payment_types.map(p => p.tipping_frequency_pct);
+                const tripCounts = data.payment_types.map(p => p.trip_count);
+                const pctOfTrips = data.payment_types.map(p => p.pct_of_trips);
+
+                // Payment distribution pie chart
+                const tracePie = {
+                    labels: payments,
+                    values: tripCounts,
+                    type: 'pie',
+                    marker: {
+                        colors: ['#667eea', '#764ba2', '#f093fb', '#4facfe']
+                    },
+                    textinfo: 'label+percent',
+                    text: tripCounts.map(c => formatNumber(c)),
+                    textposition: 'outside'
+                };
+
+                const layout1 = {
+                    title: 'Payment Method Distribution',
+                    height: 400
+                };
+
+                Plotly.newPlot('payment-distribution', [tracePie], layout1);
+
+                // Comprehensive payment analysis table
+                let analysisHTML = `
+                    <h3>Payment Method & Tipping Behavior Analysis</h3>
+                    <table>
+                        <tr>
+                            <th>Payment Type</th>
+                            <th>Trips</th>
+                            <th>% of Total</th>
+                            <th>Avg Fare</th>
+                            <th>Avg Tip</th>
+                            <th>Tip %</th>
+                            <th>Tip Frequency</th>
+                        </tr>
+                `;
+
+                data.payment_types.forEach(p => {
+                    analysisHTML += `
+                        <tr>
+                            <td><strong>${p.payment_type}</strong></td>
+                            <td>${formatNumber(p.trip_count)}</td>
+                            <td>${p.pct_of_trips.toFixed(2)}%</td>
+                            <td>${formatCurrency(p.avg_fare)}</td>
+                            <td>${formatCurrency(p.avg_tip)}</td>
+                            <td>${p.avg_tip_pct.toFixed(2)}%</td>
+                            <td>${p.tipping_frequency_pct.toFixed(2)}%</td>
+                        </tr>
+                    `;
+                });
+
+                analysisHTML += '</table>';
+
+                // Add key insights
+                const creditCard = data.payment_types.find(p => p.payment_type === 'Credit card');
+                const cash = data.payment_types.find(p => p.payment_type === 'Cash');
+
+                analysisHTML += `
+                    <div style="margin-top: 20px; padding: 15px; background: #e8f4fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+                        <h4 style="color: #1976D2; margin-bottom: 10px;">💡 Key Behavioral Economics Insights</h4>
+                        <p style="color: #555; line-height: 1.8; margin: 0;">
+                            • <strong>Credit Card Dominance:</strong> ${creditCard.pct_of_trips.toFixed(1)}% of trips use credit cards<br>
+                            • <strong>Tipping Gap:</strong> Credit card users tip ${creditCard.tipping_frequency_pct.toFixed(1)}% of the time vs. ${cash.tipping_frequency_pct.toFixed(2)}% for cash<br>
+                            • <strong>Tip Amount:</strong> Credit card tips average ${creditCard.avg_tip_pct.toFixed(1)}% of fare (${formatCurrency(creditCard.avg_tip)})<br>
+                            • <strong>Driver Income Impact:</strong> Digital payments dramatically increase driver earnings through higher tip frequency and amounts
+                        </p>
+                    </div>
+                `;
+
+                document.getElementById('payment-analysis').innerHTML = analysisHTML;
+
+            } catch (error) {
+                document.getElementById('payment-distribution').innerHTML =
+                    `<div class="error">Error loading payment data: ${error.message}</div>`;
+            }
+        }
+
+        // Feature 8: Anomalies - Enhanced with examples
+        async function loadAnomalyData() {
+            try {
+                const response = await fetch(`${API_BASE}/api/anomalies/summary`);
+                const data = await response.json();
+
+                const summaryHTML = `
+                    <h3>Anomaly Detection Summary</h3>
+                    <div class="metric-grid">
+                        <div class="metric-box">
+                            <div class="value">${formatNumber(data.anomalies.high_fare_per_mile.count)}</div>
+                            <div class="label">High Fare/Mile Trips</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="value">${data.anomalies.high_fare_per_mile.percentage}%</div>
+                            <div class="label">Percentage of Total</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="value">${formatNumber(data.anomalies.no_tip_expensive.count)}</div>
+                            <div class="label">No Tip on Expensive Trips</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="value">${data.anomalies.no_tip_expensive.percentage}%</div>
+                            <div class="label">Percentage of Trips >$50</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 20px; color: #666; line-height: 1.8;">
+                        <strong>Anomaly Categories:</strong><br>
+                        • <strong>High Fare/Mile (>$50/mile):</strong> Indicates surge pricing, traffic delays, or potential data errors<br>
+                        • <strong>No Tip on Expensive Trips:</strong> Behavioral anomaly suggesting service issues or cash payments<br>
+                        • <strong>Quality Control:</strong> These flags help identify fraudulent transactions and improve data accuracy
+                    </p>
+                `;
+
+                document.getElementById('anomaly-summary').innerHTML = summaryHTML;
+
+                // Load example anomalies
+                const examplesResponse = await fetch(`${API_BASE}/api/anomalies/high-fare-per-mile?limit=10`);
+                const examplesData = await examplesResponse.json();
+
+                let examplesHTML = `
+                    <h3>Sample High Fare/Mile Anomalies (Top 10)</h3>
+                    <table>
+                        <tr>
+                            <th>Trip ID</th>
+                            <th>Pickup</th>
+                            <th>Dropoff</th>
+                            <th>Fare</th>
+                            <th>Distance</th>
+                            <th>$/Mile</th>
+                            <th>Duration</th>
+                        </tr>
+                `;
+
+                examplesData.anomalies.slice(0, 10).forEach(anomaly => {
+                    examplesHTML += `
+                        <tr>
+                            <td>${anomaly.trip_id}</td>
+                            <td>${anomaly.pickup_zone}</td>
+                            <td>${anomaly.dropoff_zone}</td>
+                            <td>${formatCurrency(anomaly.fare_amount)}</td>
+                            <td>${anomaly.trip_distance} mi</td>
+                            <td><strong>${formatCurrency(anomaly.fare_per_mile)}</strong></td>
+                            <td>${anomaly.duration_min} min</td>
+                        </tr>
+                    `;
+                });
+
+                examplesHTML += '</table>';
+                document.getElementById('anomaly-examples').innerHTML = examplesHTML;
+
+            } catch (error) {
+                document.getElementById('anomaly-summary').innerHTML =
+                    `<div class="error">Error loading anomaly data: ${error.message}</div>`;
+            }
+        }
+
+        // Load all data on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStats();
+            loadZoneData();
+            loadTemporalData();
+            loadFareData();
+            loadAirportData();
+            loadODFlowData();
+            loadVendorData();
+            loadPaymentData();
+            loadAnomalyData();
+        });
+    </script>
+</body>
+</html>
