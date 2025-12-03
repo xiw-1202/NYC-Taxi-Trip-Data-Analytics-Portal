@@ -237,7 +237,50 @@ pip install -r requirements.txt
 - `fastapi` - REST API framework
 - `uvicorn` - ASGI server
 
-### 3. Build Database (First Time Only)
+### 3. Download Data Files
+
+**Note:** Data files are too large for GitHub. Download them from NYC TLC:
+
+#### Option 1: Automated Download (Recommended)
+
+```bash
+# Download all required files automatically
+python3 scripts/download.py
+```
+
+This will download:
+- 10 Parquet files (Jan-Oct 2025): `yellow_tripdata_2025-01.parquet` through `yellow_tripdata_2025-10.parquet`
+- Zone lookup CSV: `taxi_zone_lookup.csv`
+- Total download: ~650 MB
+
+#### Option 2: Manual Download
+
+Visit the [NYC TLC Trip Record Data page](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) and download:
+
+1. **Yellow Taxi Trip Records** (Parquet format):
+   - January 2025: `yellow_tripdata_2025-01.parquet`
+   - February 2025: `yellow_tripdata_2025-02.parquet`
+   - March 2025: `yellow_tripdata_2025-03.parquet`
+   - April 2025: `yellow_tripdata_2025-04.parquet`
+   - May 2025: `yellow_tripdata_2025-05.parquet`
+   - June 2025: `yellow_tripdata_2025-06.parquet`
+   - July 2025: `yellow_tripdata_2025-07.parquet`
+   - August 2025: `yellow_tripdata_2025-08.parquet`
+   - September 2025: `yellow_tripdata_2025-09.parquet`
+   - October 2025: `yellow_tripdata_2025-10.parquet`
+
+2. **Taxi Zone Lookup Table**: `taxi_zone_lookup.csv`
+
+3. Place all files in the `data/raw/` directory:
+   ```
+   data/raw/
+   ├── yellow_tripdata_2025-01.parquet
+   ├── yellow_tripdata_2025-02.parquet
+   ├── ... (all 10 months)
+   └── taxi_zone_lookup.csv
+   ```
+
+### 4. Build Database (First Time Only)
 
 ```bash
 # Run ETL pipeline to create database from Parquet files
@@ -253,7 +296,14 @@ python3 etl_pipeline.py
 
 **Time:** ~4-5 minutes on modern hardware
 
-### 4. Start Backend Server
+**Verify Data Files:**
+```bash
+# Check that all files are present
+ls -lh data/raw/
+# Should show 10 .parquet files and taxi_zone_lookup.csv
+```
+
+### 5. Start Backend Server
 
 ```bash
 # Option 1: Using shell script
@@ -284,7 +334,7 @@ Backend will start on `http://localhost:8000`
 - `GET /api/anomalies/high-fare-per-mile` - Fare anomalies
 - `GET /api/anomalies/summary` - Anomaly summary
 
-### 5. Open Frontend
+### 6. Open Frontend
 
 ```bash
 # Open in default browser
@@ -295,6 +345,26 @@ open frontend/index.html
 ```
 
 The frontend will connect to `http://localhost:8000` and display 8 interactive analytics features.
+
+---
+
+## 📦 Data Files
+
+**Why not included in repository?**
+- Total size: ~6.5 GB (Parquet files + DuckDB database)
+- Exceeds GitHub's 100 MB file size limit
+- Raw data: ~650 MB compressed
+- Generated database: ~6 GB
+
+**Download sources:**
+- **Primary:** NYC TLC Trip Record Data (official source)
+- **Automated:** Use `python3 scripts/download.py` to download automatically
+- **Manual:** Download individual files from [NYC TLC website](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)
+
+**File sizes:**
+- Each Parquet file: 56-74 MB
+- Zone lookup CSV: 12 KB
+- Generated DuckDB: ~6 GB (after ETL)
 
 ---
 
