@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Download NYC Taxi Trip Data
-Downloads all required data files for the analytics project
+Downloads Parquet files for the analytics project
+Note: taxi_zone_lookup.csv is already included in the repository
 """
 
 import os
@@ -15,40 +16,22 @@ print(" NYC Taxi Data Download Script")
 print("=" * 70)
 print()
 
-# Base URLs
-trip_data_base = "https://d37ci6vzurychx.cloudfront.net/trip-data"
-misc_base = "https://d37ci6vzurychx.cloudfront.net/misc"
-
-# Download taxi zone lookup table
-print("1. Downloading Taxi Zone Lookup Table...")
-print("-" * 70)
-
-zone_filename = "taxi_zone_lookup.csv"
-zone_url = f"{misc_base}/{zone_filename}"
-zone_filepath = f"./data/raw/{zone_filename}"
-
+# Check if zone lookup file exists (should be in repo)
+zone_filepath = "./data/raw/taxi_zone_lookup.csv"
 if os.path.exists(zone_filepath):
-    print(f"✓ {zone_filename} already exists, skipping...")
+    size_kb = os.path.getsize(zone_filepath) / 1024
+    print(f"✓ taxi_zone_lookup.csv found ({size_kb:.1f} KB)")
 else:
-    try:
-        print(f"Downloading {zone_filename}...")
-        response = requests.get(zone_url)
-        response.raise_for_status()
-
-        with open(zone_filepath, "wb") as f:
-            f.write(response.content)
-
-        size_kb = len(response.content) / 1024
-        print(f"✓ {zone_filename} downloaded successfully! ({size_kb:.1f} KB)")
-    except Exception as e:
-        print(f"✗ Error downloading {zone_filename}: {e}")
+    print("⚠️  Warning: taxi_zone_lookup.csv not found!")
+    print("   This file should be included in the repository.")
 
 print()
 
 # Download yellow taxi trip data
-print("2. Downloading Yellow Taxi Trip Data (10 months)...")
+print("Downloading Yellow Taxi Trip Data (10 months)...")
 print("-" * 70)
 
+trip_data_base = "https://d37ci6vzurychx.cloudfront.net/trip-data"
 months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10"]
 year = "2025"
 
@@ -94,15 +77,15 @@ print("=" * 70)
 print(" Download Summary")
 print("=" * 70)
 
-# List all downloaded files
+# Check all required files
 import glob
 
 # Check zone lookup
 if os.path.exists(zone_filepath):
     size_kb = os.path.getsize(zone_filepath) / 1024
-    print(f"✓ {zone_filename:45s} {size_kb:6.1f} KB")
+    print(f"✓ taxi_zone_lookup.csv                          {size_kb:6.1f} KB")
 else:
-    print(f"✗ {zone_filename:45s} MISSING")
+    print(f"✗ taxi_zone_lookup.csv                          MISSING")
 
 print()
 
@@ -127,11 +110,11 @@ for month in months:
 
 print("=" * 70)
 print(f"Parquet files: {len(parquet_files)}/10")
-print(f"Total size: {total_size:.1f} MB")
+print(f"Total data size: {total_size:.1f} MB")
 
 if len(parquet_files) == 10 and os.path.exists(zone_filepath):
     print()
-    print("✓ All required files downloaded successfully!")
+    print("✓ All required files present!")
     print()
     print("Next steps:")
     print("  1. Run ETL pipeline: python3 etl_pipeline.py")
@@ -142,5 +125,7 @@ else:
     print("✗ Some files are missing. Please re-run this script.")
     if missing_months:
         print(f"   Missing months: {', '.join(missing_months)}")
+    if not os.path.exists(zone_filepath):
+        print(f"   Missing: taxi_zone_lookup.csv (should be in repository)")
 
 print("=" * 70)

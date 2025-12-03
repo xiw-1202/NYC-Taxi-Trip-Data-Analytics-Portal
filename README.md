@@ -239,46 +239,37 @@ pip install -r requirements.txt
 
 ### 3. Download Data Files
 
-**Note:** Data files are too large for GitHub. Download them from NYC TLC:
+**Note:** Parquet files are too large for GitHub (~650 MB). The zone lookup CSV is already included in the repository.
 
 #### Option 1: Automated Download (Recommended)
 
 ```bash
-# Download all required files automatically
+# Download all Parquet files automatically
 python3 scripts/download.py
 ```
 
 This will download:
 - 10 Parquet files (Jan-Oct 2025): `yellow_tripdata_2025-01.parquet` through `yellow_tripdata_2025-10.parquet`
-- Zone lookup CSV: `taxi_zone_lookup.csv`
 - Total download: ~650 MB
+- Zone lookup CSV (`taxi_zone_lookup.csv`) is already in `data/raw/` from the repository
 
 #### Option 2: Manual Download
 
 Visit the [NYC TLC Trip Record Data page](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) and download:
 
-1. **Yellow Taxi Trip Records** (Parquet format):
-   - January 2025: `yellow_tripdata_2025-01.parquet`
-   - February 2025: `yellow_tripdata_2025-02.parquet`
-   - March 2025: `yellow_tripdata_2025-03.parquet`
-   - April 2025: `yellow_tripdata_2025-04.parquet`
-   - May 2025: `yellow_tripdata_2025-05.parquet`
-   - June 2025: `yellow_tripdata_2025-06.parquet`
-   - July 2025: `yellow_tripdata_2025-07.parquet`
-   - August 2025: `yellow_tripdata_2025-08.parquet`
-   - September 2025: `yellow_tripdata_2025-09.parquet`
-   - October 2025: `yellow_tripdata_2025-10.parquet`
+**Yellow Taxi Trip Records** (Parquet format):
+- January 2025: `yellow_tripdata_2025-01.parquet`
+- February 2025: `yellow_tripdata_2025-02.parquet`
+- March 2025: `yellow_tripdata_2025-03.parquet`
+- April 2025: `yellow_tripdata_2025-04.parquet`
+- May 2025: `yellow_tripdata_2025-05.parquet`
+- June 2025: `yellow_tripdata_2025-06.parquet`
+- July 2025: `yellow_tripdata_2025-07.parquet`
+- August 2025: `yellow_tripdata_2025-08.parquet`
+- September 2025: `yellow_tripdata_2025-09.parquet`
+- October 2025: `yellow_tripdata_2025-10.parquet`
 
-2. **Taxi Zone Lookup Table**: `taxi_zone_lookup.csv`
-
-3. Place all files in the `data/raw/` directory:
-   ```
-   data/raw/
-   ├── yellow_tripdata_2025-01.parquet
-   ├── yellow_tripdata_2025-02.parquet
-   ├── ... (all 10 months)
-   └── taxi_zone_lookup.csv
-   ```
+Place all Parquet files in the `data/raw/` directory. The `taxi_zone_lookup.csv` is already there from the repository.
 
 ### 4. Build Database (First Time Only)
 
@@ -350,21 +341,26 @@ The frontend will connect to `http://localhost:8000` and display 8 interactive a
 
 ## 📦 Data Files
 
-**Why not included in repository?**
-- Total size: ~6.5 GB (Parquet files + DuckDB database)
-- Exceeds GitHub's 100 MB file size limit
-- Raw data: ~650 MB compressed
-- Generated database: ~6 GB
+**What's included in the repository:**
+- ✅ `taxi_zone_lookup.csv` (12 KB) - Zone reference data
 
-**Download sources:**
-- **Primary:** NYC TLC Trip Record Data (official source)
-- **Automated:** Use `python3 scripts/download.py` to download automatically
-- **Manual:** Download individual files from [NYC TLC website](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)
+**What needs to be downloaded:**
+- ❌ 10 Parquet files (~650 MB) - Trip data for Jan-Oct 2025
+- ❌ Generated DuckDB database (~6 GB) - Created by ETL pipeline
 
-**File sizes:**
-- Each Parquet file: 56-74 MB
-- Zone lookup CSV: 12 KB
-- Generated DuckDB: ~6 GB (after ETL)
+**Why Parquet files not included?**
+- Individual files: 56-74 MB each
+- Total: ~650 MB compressed
+- Exceeds GitHub's 100 MB file size limit for individual files
+
+**Download options:**
+- **Automated:** `python3 scripts/download.py` (recommended)
+- **Manual:** Download from [NYC TLC website](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)
+
+**After cloning:**
+1. Repository includes: Code, schema, zone lookup CSV
+2. You download: 10 Parquet files (~650 MB)
+3. ETL pipeline creates: DuckDB database (~6 GB)
 
 ---
 
