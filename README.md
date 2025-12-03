@@ -53,7 +53,7 @@ Our database uses a **star schema** optimized for OLAP (Online Analytical Proces
 
 ### Fact Table: `fact_trip`
 
-**Size:** ~24 million rows, ~2.6 GB
+**Size:** ~24 million rows, ~6 GB
 **Purpose:** Stores individual trip transactions with foreign keys to dimension tables
 
 **Key Columns:**
@@ -196,7 +196,7 @@ GROUP BY v.vendor_name;
 
 **Column-Store Advantages:**
 - Columnar storage reduces I/O for analytical queries
-- Efficient compression (2.6 GB for 24M rows)
+- Efficient compression (~6 GB for 24M rows with indexes)
 - Vectorized query execution for fast aggregations
 
 **Query Performance:**
@@ -283,7 +283,7 @@ python3 etl_pipeline.py
 2. Creates star schema with fact and dimension tables
 3. Filters for Manhattan trips only
 4. Creates 10 indexes for query optimization
-5. Generates `data/taxi_analytics.duckdb` (~2.6 GB)
+5. Generates `data/taxi_analytics.duckdb` (~6 GB)
 
 **Time:** ~4-5 minutes on modern hardware
 
@@ -381,7 +381,7 @@ NYC-Taxi-Trip-Data-Analytics-Portal/
 │
 ├── database/
 │   ├── schema_duckdb.sql          # Complete database schema
-│   └── queries_optimized.sql      # Optimized SQL queries
+│   └── queries.sql                # SQL queries
 │
 ├── data/
 │   ├── raw/                       # Source Parquet files (10 months)
@@ -404,8 +404,8 @@ NYC-Taxi-Trip-Data-Analytics-Portal/
 - Data size: 10 Parquet files, ~581.6 MB raw
 
 **Database Size:**
-- DuckDB file: ~2.6 GB
-- Compression ratio: ~4.5:1
+- DuckDB file: ~6 GB
+- Includes: 24M rows + 10 indexes + dimension tables
 
 **Table Sizes:**
 - `fact_trip`: 24,118,902 rows
