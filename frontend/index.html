@@ -197,6 +197,215 @@
             font-size: 0.9em;
             color: #666;
         }
+
+        .tab-container {
+            margin-bottom: 30px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #667eea;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .tab-button:hover {
+            background: #e8eaf6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .unified-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 500px;
+        }
+
+        .region-comparison-controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .region-comparison-controls h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .region-controls-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .region-control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .region-control-group label {
+            font-size: 0.9em;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .region-control-group select {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .region-control-group select:hover {
+            border-color: #667eea;
+        }
+
+        .region-control-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .compare-button {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+        }
+
+        .compare-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .compare-button:active {
+            transform: translateY(0);
+        }
+
+        .comparison-results {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e8f4fd;
+            border-left: 4px solid #2196F3;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .comparison-results.active {
+            display: block;
+        }
+
+        .comparison-results h4 {
+            color: #1976D2;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .comparison-table th {
+            background: #2196F3;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .comparison-metric {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .comparison-value {
+            text-align: right;
+        }
+
+        .comparison-diff {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .comparison-diff.positive {
+            color: #4caf50;
+        }
+
+        .comparison-diff.negative {
+            color: #f44336;
+        }
+
+        .comparison-diff.neutral {
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -211,145 +420,258 @@
         <!-- Overall Statistics -->
         <div id="overall-stats" class="stats-grid"></div>
 
-        <!-- Feature 1: Zone Popularity -->
-        <div class="feature-section">
-            <div class="feature-title">
-                <span class="feature-number">1</span>
-                Zone Popularity Ranking - Spatial Demand Analysis
+        <!-- Unified Feature Section with Tabs -->
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="switchTab(1)">1. Zone Popularity</button>
+                <button class="tab-button" onclick="switchTab(2)">2. Temporal Demand</button>
+                <button class="tab-button" onclick="switchTab(3)">3. Fare Structure</button>
+                <button class="tab-button" onclick="switchTab(4)">4. Airport Trips</button>
+                <button class="tab-button" onclick="switchTab(5)">5. OD Flows</button>
+                <button class="tab-button" onclick="switchTab(6)">6. Vendor Performance</button>
+                <button class="tab-button" onclick="switchTab(7)">7. Payment & Tipping</button>
+                <button class="tab-button" onclick="switchTab(8)">8. Anomalies</button>
             </div>
-            <div class="feature-description">
-                <h4>📍 What This Shows</h4>
-                <p>Identifies Manhattan's most active taxi zones by analyzing pickup and dropoff volumes. This reveals urban mobility hotspots, business districts, and residential commuter patterns.</p>
-                <div class="insight">
-                    <strong>Business Value:</strong> Fleet operators can optimize vehicle positioning, urban planners can identify high-demand areas for infrastructure investment, and real estate developers can assess location desirability.
-                </div>
-            </div>
-            <div class="chart-container" id="zone-chart"></div>
-            <div class="chart-container" id="zone-comparison"></div>
-        </div>
 
-        <!-- Feature 2: Temporal Demand -->
-        <div class="feature-section">
-            <div class="feature-title">
-                <span class="feature-number">2</span>
-                Temporal Demand Patterns - Time-Series Analysis
-            </div>
-            <div class="feature-description">
-                <h4>⏰ What This Shows</h4>
-                <p>Analyzes how taxi demand varies by hour and day of week, revealing commute patterns, nightlife activity, and weekend vs. weekday behavior differences.</p>
-                <div class="insight">
-                    <strong>Key Finding:</strong> Rush hour peaks (8-9 AM, 6-7 PM) show 2-3x higher demand than off-peak hours. Weekend demand peaks later (10 PM-2 AM) due to nightlife activity.
-                </div>
-            </div>
-            <div class="chart-container" id="temporal-hourly"></div>
-            <div class="chart-container" id="temporal-heatmap"></div>
-        </div>
+            <div class="unified-section">
+                <!-- Tab 1: Zone Popularity -->
+                <div id="tab-1" class="tab-content active">
+                    <div class="feature-title">
+                        <span class="feature-number">1</span>
+                        Zone Popularity Ranking - Spatial Demand Analysis
+                    </div>
+                    <div class="feature-description">
+                        <h4>📍 What This Shows</h4>
+                        <p>Identifies Manhattan's most active taxi zones by analyzing pickup and dropoff volumes. This reveals urban mobility hotspots, business districts, and residential commuter patterns.</p>
+                        <div class="insight">
+                            <strong>Business Value:</strong> Fleet operators can optimize vehicle positioning, urban planners can identify high-demand areas for infrastructure investment, and real estate developers can assess location desirability.
+                        </div>
+                    </div>
+                    
+                    <!-- Region Comparison Controls -->
+                    <div class="region-comparison-controls">
+                        <h3>🌍 Zone Comparison</h3>
+                        <div class="region-controls-row">
+                            <div class="region-control-group">
+                                <label for="zone1-select">Select Zone 1:</label>
+                                <select id="zone1-select">
+                                    <option value="">-- Select Zone --</option>
+                                </select>
+                            </div>
+                            <div class="region-control-group">
+                                <label for="zone2-select">Select Zone 2:</label>
+                                <select id="zone2-select">
+                                    <option value="">-- Select Zone --</option>
+                                </select>
+                            </div>
+                            <div class="region-control-group">
+                                <label>&nbsp;</label>
+                                <button class="compare-button" onclick="compareZones(1)">Compare Zones</button>
+                            </div>
+                        </div>
+                        <div id="zone-comparison-results" class="comparison-results">
+                            <h4>📊 Zone Comparison Results</h4>
+                            <div id="zone-comparison-content"></div>
+                        </div>
+                    </div>
 
-        <!-- Feature 3: Fare Structure -->
-        <div class="feature-section">
-            <div class="feature-title">
-                <span class="feature-number">3</span>
-                Fare Structure Breakdown - Economic Component Analysis
-            </div>
-            <div class="feature-description">
-                <h4>💰 What This Shows</h4>
-                <p>Decomposes total fare into individual components (base fare, tips, taxes, surcharges) to understand cost structure and government revenue streams.</p>
-                <div class="insight">
-                    <strong>Economic Impact:</strong> Surcharges (congestion, MTA tax, improvement fee) represent 15-20% of total fare, generating significant public revenue while influencing customer pricing perception.
+                    <div class="chart-container" id="zone-chart"></div>
+                    <div class="chart-container" id="zone-comparison"></div>
                 </div>
-            </div>
-            <div class="chart-container" id="fare-pie"></div>
-            <div class="chart-container" id="fare-surcharges"></div>
-        </div>
 
-        <!-- Feature 4: Airport Trips -->
-        <div class="feature-section">
-            <div class="feature-title">
-                <span class="feature-number">4</span>
-                Airport Trip Analysis - Hub Connectivity Study
-            </div>
-            <div class="feature-description">
-                <h4>✈️ What This Shows</h4>
-                <p>Compares airport trips (JFK, LGA, EWR) vs. regular Manhattan trips, analyzing volume, fares, distances, and origin zones for airport passengers.</p>
-                <div class="insight">
-                    <strong>Travel Pattern:</strong> Airport trips have 3-4x higher average fares ($50-65 vs. $15-18) and originate primarily from Midtown hotels and business districts.
+                <!-- Tab 2: Temporal Demand -->
+                <div id="tab-2" class="tab-content">
+                    <div class="feature-title">
+                        <span class="feature-number">2</span>
+                        Temporal Demand Patterns - Time-Series Analysis
+                    </div>
+                    <div class="feature-description">
+                        <h4>⏰ What This Shows</h4>
+                        <p>Analyzes how taxi demand varies by hour and day of week, revealing commute patterns, nightlife activity, and weekend vs. weekday behavior differences.</p>
+                        <div class="insight">
+                            <strong>Key Finding:</strong> Rush hour peaks (8-9 AM, 6-7 PM) show 2-3x higher demand than off-peak hours. Weekend demand peaks later (10 PM-2 AM) due to nightlife activity.
+                        </div>
+                    </div>
+                    <div class="chart-container" id="temporal-hourly"></div>
+                    <div class="chart-container" id="temporal-heatmap"></div>
                 </div>
-            </div>
-            <div class="chart-container" id="airport-comparison"></div>
-            <div class="chart-container" id="airport-origins"></div>
-        </div>
 
-        <!-- Feature 5: OD Flows -->
-        <div class="feature-section">
-            <div class="feature-title">
-                <span class="feature-number">5</span>
-                Origin-Destination Flow Patterns - Route Network Analysis
-            </div>
-            <div class="feature-description">
-                <h4>🔄 What This Shows</h4>
-                <p>Maps the most common taxi routes between Manhattan neighborhoods, revealing commuting corridors, tourism patterns, and intra-borough mobility. Analyzes route characteristics including distance, duration, and efficiency metrics.</p>
-                <div class="insight">
-                    <strong>Network Effect:</strong> Top routes show strong intra-neighborhood patterns (same-zone trips dominate), north-south commuter corridors between UES and Midtown, and efficiency variations based on traffic and distance.
+                <!-- Tab 3: Fare Structure -->
+                <div id="tab-3" class="tab-content">
+                    <div class="feature-title">
+                        <span class="feature-number">3</span>
+                        Fare Structure Breakdown - Economic Component Analysis
+                    </div>
+                    <div class="feature-description">
+                        <h4>💰 What This Shows</h4>
+                        <p>Decomposes total fare into individual components (base fare, tips, taxes, surcharges) to understand cost structure and government revenue streams.</p>
+                        <div class="insight">
+                            <strong>Economic Impact:</strong> Surcharges (congestion, MTA tax, improvement fee) represent 15-20% of total fare, generating significant public revenue while influencing customer pricing perception.
+                        </div>
+                    </div>
+                    <div class="chart-container" id="fare-pie"></div>
+                    <div class="chart-container" id="fare-surcharges"></div>
                 </div>
-            </div>
-            <div class="chart-container" id="od-table"></div>
-            <div class="chart-container" id="od-flow-analysis"></div>
-        </div>
 
-        <!-- Feature 6: Vendor Performance -->
-        <div class="feature-section">
-            <div class="feature-title">
-                <span class="feature-number">6</span>
-                Vendor Market Share & Performance - Competitive Analysis
-            </div>
-            <div class="feature-description">
-                <h4>🏢 What This Shows</h4>
-                <p>Compares taxi vendors (CMT vs. VeriFone) by market share, service quality metrics (avg fare, distance, duration), and operational efficiency.</p>
-                <div class="insight">
-                    <strong>Market Dynamics:</strong> VeriFone dominates with 75-80% market share. Performance metrics are remarkably similar across vendors, suggesting standardized service quality and regulated pricing.
-                </div>
-            </div>
-            <div class="chart-container" id="vendor-market"></div>
-            <div class="chart-container" id="vendor-performance"></div>
-        </div>
+                <!-- Tab 4: Airport Trips -->
+                <div id="tab-4" class="tab-content">
+                    <div class="feature-title">
+                        <span class="feature-number">4</span>
+                        Airport Trip Analysis - Hub Connectivity Study
+                    </div>
+                    <div class="feature-description">
+                        <h4>✈️ What This Shows</h4>
+                        <p>Compares airport trips (JFK, LGA, EWR) vs. regular Manhattan trips, analyzing volume, fares, distances, and origin zones for airport passengers.</p>
+                        <div class="insight">
+                            <strong>Travel Pattern:</strong> Airport trips have 3-4x higher average fares ($50-65 vs. $15-18) and originate primarily from Midtown hotels and business districts.
+                        </div>
+                    </div>
+                    
+                    <!-- Region Comparison Controls -->
+                    <div class="region-comparison-controls">
+                        <h3>🌍 Zone Comparison for Airport Trips</h3>
+                        <div class="region-controls-row">
+                            <div class="region-control-group">
+                                <label for="airport-zone1-select">Select Zone 1:</label>
+                                <select id="airport-zone1-select">
+                                    <option value="">-- Select Zone --</option>
+                                </select>
+                            </div>
+                            <div class="region-control-group">
+                                <label for="airport-zone2-select">Select Zone 2:</label>
+                                <select id="airport-zone2-select">
+                                    <option value="">-- Select Zone --</option>
+                                </select>
+                            </div>
+                            <div class="region-control-group">
+                                <label>&nbsp;</label>
+                                <button class="compare-button" onclick="compareZones(4)">Compare Zones</button>
+                            </div>
+                        </div>
+                        <div id="airport-comparison-results" class="comparison-results">
+                            <h4>📊 Airport Trip Zone Comparison Results</h4>
+                            <div id="airport-comparison-content"></div>
+                        </div>
+                    </div>
 
-        <!-- Feature 7: Payment & Tipping -->
-        <div class="feature-section">
-            <div class="feature-title">
-                <span class="feature-number">7</span>
-                Payment Method & Tipping Behavior - Transaction Psychology
-            </div>
-            <div class="feature-description">
-                <h4>💳 What This Shows</h4>
-                <p>Analyzes payment method distribution (credit card, cash, dispute, no charge) and their impact on tipping behavior. Shows how digital payments influence gratuity patterns and driver income.</p>
-                <div class="insight">
-                    <strong>Behavioral Economics:</strong> Credit card users tip in 95% of trips with 26.5% average tip rate, while cash payments show 0% recorded tips. Payment method choice has dramatic impact on driver earnings.
+                    <div class="chart-container" id="airport-comparison"></div>
+                    <div class="chart-container" id="airport-origins"></div>
                 </div>
-            </div>
-            <div class="chart-container" id="payment-distribution"></div>
-            <div class="chart-container" id="payment-analysis"></div>
-        </div>
 
-        <!-- Feature 8: Anomalies -->
-        <div class="feature-section">
-            <div class="feature-title">
-                <span class="feature-number">8</span>
-                Outlier & Anomaly Detection - Data Quality & Edge Cases
-            </div>
-            <div class="feature-description">
-                <h4>🔍 What This Shows</h4>
-                <p>Identifies unusual trips (abnormally high fares, suspicious routes, data quality issues) using statistical outlier detection methods.</p>
-                <div class="insight">
-                    <strong>Quality Control:</strong> 2-4% of trips show anomalies including surge pricing ($50+/mile), data entry errors, or special circumstances (emergencies, VIP service). Critical for data cleaning and fraud detection.
+                <!-- Tab 5: OD Flows -->
+                <div id="tab-5" class="tab-content">
+                    <div class="feature-title">
+                        <span class="feature-number">5</span>
+                        Origin-Destination Flow Patterns - Route Network Analysis
+                    </div>
+                    <div class="feature-description">
+                        <h4>🔄 What This Shows</h4>
+                        <p>Maps the most common taxi routes between Manhattan neighborhoods, revealing commuting corridors, tourism patterns, and intra-borough mobility. Analyzes route characteristics including distance, duration, and efficiency metrics.</p>
+                        <div class="insight">
+                            <strong>Network Effect:</strong> Top routes show strong intra-neighborhood patterns (same-zone trips dominate), north-south commuter corridors between UES and Midtown, and efficiency variations based on traffic and distance.
+                        </div>
+                    </div>
+                    
+                    <!-- Region Comparison Controls -->
+                    <div class="region-comparison-controls">
+                        <h3>🌍 Route Comparison</h3>
+                        <div class="region-controls-row">
+                            <div class="region-control-group">
+                                <label for="od-zone1-select">Select Origin Zone 1:</label>
+                                <select id="od-zone1-select">
+                                    <option value="">-- Select Zone --</option>
+                                </select>
+                            </div>
+                            <div class="region-control-group">
+                                <label for="od-zone2-select">Select Origin Zone 2:</label>
+                                <select id="od-zone2-select">
+                                    <option value="">-- Select Zone --</option>
+                                </select>
+                            </div>
+                            <div class="region-control-group">
+                                <label>&nbsp;</label>
+                                <button class="compare-button" onclick="compareZones(5)">Compare Routes</button>
+                            </div>
+                        </div>
+                        <div id="od-comparison-results" class="comparison-results">
+                            <h4>📊 Route Comparison Results</h4>
+                            <div id="od-comparison-content"></div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container" id="od-table"></div>
+                    <div class="chart-container" id="od-flow-analysis"></div>
+                </div>
+
+                <!-- Tab 6: Vendor Performance -->
+                <div id="tab-6" class="tab-content">
+                    <div class="feature-title">
+                        <span class="feature-number">6</span>
+                        Vendor Market Share & Performance - Competitive Analysis
+                    </div>
+                    <div class="feature-description">
+                        <h4>🏢 What This Shows</h4>
+                        <p>Compares taxi vendors (CMT vs. VeriFone) by market share, service quality metrics (avg fare, distance, duration), and operational efficiency.</p>
+                        <div class="insight">
+                            <strong>Market Dynamics:</strong> VeriFone dominates with 75-80% market share. Performance metrics are remarkably similar across vendors, suggesting standardized service quality and regulated pricing.
+                        </div>
+                    </div>
+                    <div class="chart-container" id="vendor-market"></div>
+                    <div class="chart-container" id="vendor-performance"></div>
+                </div>
+
+                <!-- Tab 7: Payment & Tipping -->
+                <div id="tab-7" class="tab-content">
+                    <div class="feature-title">
+                        <span class="feature-number">7</span>
+                        Payment Method & Tipping Behavior - Transaction Psychology
+                    </div>
+                    <div class="feature-description">
+                        <h4>💳 What This Shows</h4>
+                        <p>Analyzes payment method distribution (credit card, cash, dispute, no charge) and their impact on tipping behavior. Shows how digital payments influence gratuity patterns and driver income.</p>
+                        <div class="insight">
+                            <strong>Behavioral Economics:</strong> Credit card users tip in 95% of trips with 26.5% average tip rate, while cash payments show 0% recorded tips. Payment method choice has dramatic impact on driver earnings.
+                        </div>
+                    </div>
+                    <div class="chart-container" id="payment-distribution"></div>
+                    <div class="chart-container" id="payment-analysis"></div>
+                </div>
+
+                <!-- Tab 8: Anomalies -->
+                <div id="tab-8" class="tab-content">
+                    <div class="feature-title">
+                        <span class="feature-number">8</span>
+                        Outlier & Anomaly Detection - Data Quality & Edge Cases
+                    </div>
+                    <div class="feature-description">
+                        <h4>🔍 What This Shows</h4>
+                        <p>Identifies unusual trips (abnormally high fares, suspicious routes, data quality issues) using statistical outlier detection methods.</p>
+                        <div class="insight">
+                            <strong>Quality Control:</strong> 2-4% of trips show anomalies including surge pricing ($50+/mile), data entry errors, or special circumstances (emergencies, VIP service). Critical for data cleaning and fraud detection.
+                        </div>
+                    </div>
+                    <div class="chart-container" id="anomaly-summary"></div>
+                    <div class="chart-container" id="anomaly-examples"></div>
                 </div>
             </div>
-            <div class="chart-container" id="anomaly-summary"></div>
-            <div class="chart-container" id="anomaly-examples"></div>
         </div>
     </div>
 
     <script>
         const API_BASE = 'http://localhost:8000';
+
+        // Tab switching function
+        function switchTab(tabNumber) {
+            // Hide all tab contents
+            for (let i = 1; i <= 8; i++) {
+                document.getElementById(`tab-${i}`).classList.remove('active');
+                document.querySelectorAll('.tab-button')[i - 1].classList.remove('active');
+            }
+            
+            // Show selected tab
+            document.getElementById(`tab-${tabNumber}`).classList.add('active');
+            document.querySelectorAll('.tab-button')[tabNumber - 1].classList.add('active');
+        }
 
         // Helper functions
         function formatNumber(num) {
@@ -462,9 +784,261 @@
 
                 document.getElementById('zone-comparison').innerHTML = comparisonHTML;
 
+                // Populate zone selectors for comparison
+                populateZoneSelectors(pickupData.zones, ['zone1-select', 'zone2-select']);
+
             } catch (error) {
                 document.getElementById('zone-chart').innerHTML =
                     `<div class="error">Error loading zone data: ${error.message}</div>`;
+            }
+        }
+
+        // Populate zone selectors with available zones
+        function populateZoneSelectors(zones, selectIds) {
+            selectIds.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    // Keep the first option (placeholder)
+                    const firstOption = select.options[0];
+                    select.innerHTML = '';
+                    select.appendChild(firstOption);
+                    
+                    // Add zones
+                    zones.forEach(zone => {
+                        const option = document.createElement('option');
+                        option.value = zone.zone;
+                        option.textContent = zone.zone;
+                        select.appendChild(option);
+                    });
+                }
+            });
+        }
+
+        // Compare zones function
+        async function compareZones(tabNumber) {
+            let zone1Select, zone2Select, resultsDiv, contentDiv;
+            
+            if (tabNumber === 1) {
+                zone1Select = document.getElementById('zone1-select');
+                zone2Select = document.getElementById('zone2-select');
+                resultsDiv = document.getElementById('zone-comparison-results');
+                contentDiv = document.getElementById('zone-comparison-content');
+            } else if (tabNumber === 4) {
+                zone1Select = document.getElementById('airport-zone1-select');
+                zone2Select = document.getElementById('airport-zone2-select');
+                resultsDiv = document.getElementById('airport-comparison-results');
+                contentDiv = document.getElementById('airport-comparison-content');
+            } else if (tabNumber === 5) {
+                zone1Select = document.getElementById('od-zone1-select');
+                zone2Select = document.getElementById('od-zone2-select');
+                resultsDiv = document.getElementById('od-comparison-results');
+                contentDiv = document.getElementById('od-comparison-content');
+            } else {
+                return;
+            }
+
+            const zone1 = zone1Select.value;
+            const zone2 = zone2Select.value;
+
+            if (!zone1 || !zone2) {
+                alert('Please select both zones to compare.');
+                return;
+            }
+
+            if (zone1 === zone2) {
+                alert('Please select two different zones.');
+                return;
+            }
+
+            try {
+                let zone1Data, zone2Data;
+
+                if (tabNumber === 1) {
+                    // Zone Popularity comparison
+                    const pickupResponse = await fetch(`${API_BASE}/api/zones/top-pickup?limit=100`);
+                    const pickupData = await pickupResponse.json();
+                    
+                    zone1Data = pickupData.zones.find(z => z.zone === zone1);
+                    zone2Data = pickupData.zones.find(z => z.zone === zone2);
+
+                    if (!zone1Data || !zone2Data) {
+                        throw new Error('Zone data not found');
+                    }
+
+                    const comparisonHTML = `
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Metric</th>
+                                <th>${zone1}</th>
+                                <th>${zone2}</th>
+                                <th>Difference</th>
+                            </tr>
+                            <tr>
+                                <td class="comparison-metric">Pickup Count</td>
+                                <td class="comparison-value">${formatNumber(zone1Data.pickup_count)}</td>
+                                <td class="comparison-value">${formatNumber(zone2Data.pickup_count)}</td>
+                                <td class="comparison-diff ${zone1Data.pickup_count > zone2Data.pickup_count ? 'positive' : 'negative'}">
+                                    ${zone1Data.pickup_count > zone2Data.pickup_count ? '+' : ''}${formatNumber(zone1Data.pickup_count - zone2Data.pickup_count)}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="comparison-metric">Average Fare</td>
+                                <td class="comparison-value">${formatCurrency(zone1Data.avg_fare)}</td>
+                                <td class="comparison-value">${formatCurrency(zone2Data.avg_fare)}</td>
+                                <td class="comparison-diff ${zone1Data.avg_fare > zone2Data.avg_fare ? 'positive' : 'negative'}">
+                                    ${zone1Data.avg_fare > zone2Data.avg_fare ? '+' : ''}${formatCurrency(zone1Data.avg_fare - zone2Data.avg_fare)}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="comparison-metric">Average Distance</td>
+                                <td class="comparison-value">${zone1Data.avg_distance} mi</td>
+                                <td class="comparison-value">${zone2Data.avg_distance} mi</td>
+                                <td class="comparison-diff ${zone1Data.avg_distance > zone2Data.avg_distance ? 'positive' : 'negative'}">
+                                    ${zone1Data.avg_distance > zone2Data.avg_distance ? '+' : ''}${(zone1Data.avg_distance - zone2Data.avg_distance).toFixed(2)} mi
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="comparison-metric">Median Fare</td>
+                                <td class="comparison-value">${formatCurrency(zone1Data.median_fare || 0)}</td>
+                                <td class="comparison-value">${formatCurrency(zone2Data.median_fare || 0)}</td>
+                                <td class="comparison-diff ${(zone1Data.median_fare || 0) > (zone2Data.median_fare || 0) ? 'positive' : 'negative'}">
+                                    ${(zone1Data.median_fare || 0) > (zone2Data.median_fare || 0) ? '+' : ''}${formatCurrency((zone1Data.median_fare || 0) - (zone2Data.median_fare || 0))}
+                                </td>
+                            </tr>
+                        </table>
+                    `;
+                    contentDiv.innerHTML = comparisonHTML;
+
+                } else if (tabNumber === 4) {
+                    // Airport Trips comparison
+                    const originsResponse = await fetch(`${API_BASE}/api/airport/top-origins?limit=100`);
+                    const originsData = await originsResponse.json();
+                    
+                    zone1Data = originsData.top_origins.find(z => z.zone === zone1);
+                    zone2Data = originsData.top_origins.find(z => z.zone === zone2);
+
+                    if (!zone1Data || !zone2Data) {
+                        throw new Error('Zone data not found for airport trips');
+                    }
+
+                    const comparisonHTML = `
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Metric</th>
+                                <th>${zone1}</th>
+                                <th>${zone2}</th>
+                                <th>Difference</th>
+                            </tr>
+                            <tr>
+                                <td class="comparison-metric">Airport Trip Count</td>
+                                <td class="comparison-value">${formatNumber(zone1Data.trip_count)}</td>
+                                <td class="comparison-value">${formatNumber(zone2Data.trip_count)}</td>
+                                <td class="comparison-diff ${zone1Data.trip_count > zone2Data.trip_count ? 'positive' : 'negative'}">
+                                    ${zone1Data.trip_count > zone2Data.trip_count ? '+' : ''}${formatNumber(zone1Data.trip_count - zone2Data.trip_count)}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="comparison-metric">Average Fare</td>
+                                <td class="comparison-value">${formatCurrency(zone1Data.avg_fare)}</td>
+                                <td class="comparison-value">${formatCurrency(zone2Data.avg_fare)}</td>
+                                <td class="comparison-diff ${zone1Data.avg_fare > zone2Data.avg_fare ? 'positive' : 'negative'}">
+                                    ${zone1Data.avg_fare > zone2Data.avg_fare ? '+' : ''}${formatCurrency(zone1Data.avg_fare - zone2Data.avg_fare)}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="comparison-metric">Average Distance</td>
+                                <td class="comparison-value">${zone1Data.avg_distance} mi</td>
+                                <td class="comparison-value">${zone2Data.avg_distance} mi</td>
+                                <td class="comparison-diff ${zone1Data.avg_distance > zone2Data.avg_distance ? 'positive' : 'negative'}">
+                                    ${zone1Data.avg_distance > zone2Data.avg_distance ? '+' : ''}${(zone1Data.avg_distance - zone2Data.avg_distance).toFixed(2)} mi
+                                </td>
+                            </tr>
+                        </table>
+                    `;
+                    contentDiv.innerHTML = comparisonHTML;
+
+                } else if (tabNumber === 5) {
+                    // OD Flows comparison - compare routes from two origin zones
+                    const routesResponse = await fetch(`${API_BASE}/api/od-flows/top-routes?limit=200`);
+                    const routesData = await routesResponse.json();
+                    
+                    // Get all routes from zone1 and zone2
+                    const zone1Routes = routesData.top_routes.filter(r => r.origin === zone1);
+                    const zone2Routes = routesData.top_routes.filter(r => r.origin === zone2);
+
+                    if (zone1Routes.length === 0 || zone2Routes.length === 0) {
+                        throw new Error('No route data found for selected zones');
+                    }
+
+                    // Calculate aggregate metrics
+                    const zone1Total = zone1Routes.reduce((sum, r) => sum + r.trip_count, 0);
+                    const zone2Total = zone2Routes.reduce((sum, r) => sum + r.trip_count, 0);
+                    const zone1AvgFare = zone1Routes.reduce((sum, r) => sum + r.avg_fare, 0) / zone1Routes.length;
+                    const zone2AvgFare = zone2Routes.reduce((sum, r) => sum + r.avg_fare, 0) / zone2Routes.length;
+                    const zone1AvgDistance = zone1Routes.reduce((sum, r) => sum + r.avg_distance, 0) / zone1Routes.length;
+                    const zone2AvgDistance = zone2Routes.reduce((sum, r) => sum + r.avg_distance, 0) / zone2Routes.length;
+                    const zone1AvgDuration = zone1Routes.reduce((sum, r) => sum + r.avg_duration_min, 0) / zone1Routes.length;
+                    const zone2AvgDuration = zone2Routes.reduce((sum, r) => sum + r.avg_duration_min, 0) / zone2Routes.length;
+
+                    const comparisonHTML = `
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Metric</th>
+                                <th>${zone1} (Origin)</th>
+                                <th>${zone2} (Origin)</th>
+                                <th>Difference</th>
+                            </tr>
+                            <tr>
+                                <td class="comparison-metric">Total Routes</td>
+                                <td class="comparison-value">${zone1Routes.length}</td>
+                                <td class="comparison-value">${zone2Routes.length}</td>
+                                <td class="comparison-diff ${zone1Routes.length > zone2Routes.length ? 'positive' : 'negative'}">
+                                    ${zone1Routes.length > zone2Routes.length ? '+' : ''}${zone1Routes.length - zone2Routes.length}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="comparison-metric">Total Trip Count</td>
+                                <td class="comparison-value">${formatNumber(zone1Total)}</td>
+                                <td class="comparison-value">${formatNumber(zone2Total)}</td>
+                                <td class="comparison-diff ${zone1Total > zone2Total ? 'positive' : 'negative'}">
+                                    ${zone1Total > zone2Total ? '+' : ''}${formatNumber(zone1Total - zone2Total)}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="comparison-metric">Average Fare</td>
+                                <td class="comparison-value">${formatCurrency(zone1AvgFare)}</td>
+                                <td class="comparison-value">${formatCurrency(zone2AvgFare)}</td>
+                                <td class="comparison-diff ${zone1AvgFare > zone2AvgFare ? 'positive' : 'negative'}">
+                                    ${zone1AvgFare > zone2AvgFare ? '+' : ''}${formatCurrency(zone1AvgFare - zone2AvgFare)}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="comparison-metric">Average Distance</td>
+                                <td class="comparison-value">${zone1AvgDistance.toFixed(2)} mi</td>
+                                <td class="comparison-value">${zone2AvgDistance.toFixed(2)} mi</td>
+                                <td class="comparison-diff ${zone1AvgDistance > zone2AvgDistance ? 'positive' : 'negative'}">
+                                    ${zone1AvgDistance > zone2AvgDistance ? '+' : ''}${(zone1AvgDistance - zone2AvgDistance).toFixed(2)} mi
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="comparison-metric">Average Duration</td>
+                                <td class="comparison-value">${zone1AvgDuration.toFixed(1)} min</td>
+                                <td class="comparison-value">${zone2AvgDuration.toFixed(1)} min</td>
+                                <td class="comparison-diff ${zone1AvgDuration > zone2AvgDuration ? 'negative' : 'positive'}">
+                                    ${zone1AvgDuration > zone2AvgDuration ? '+' : ''}${(zone1AvgDuration - zone2AvgDuration).toFixed(1)} min
+                                </td>
+                            </tr>
+                        </table>
+                    `;
+                    contentDiv.innerHTML = comparisonHTML;
+                }
+
+                // Show results
+                resultsDiv.classList.add('active');
+
+            } catch (error) {
+                alert(`Error comparing zones: ${error.message}`);
+                console.error('Comparison error:', error);
             }
         }
 
@@ -720,6 +1294,14 @@
                 originsHTML += '</table>';
                 document.getElementById('airport-origins').innerHTML = originsHTML;
 
+                // Populate airport zone selectors for comparison
+                const allOriginsResponse = await fetch(`${API_BASE}/api/airport/top-origins?limit=100`);
+                const allOriginsData = await allOriginsResponse.json();
+                populateZoneSelectors(
+                    allOriginsData.top_origins.map(o => ({ zone: o.zone })),
+                    ['airport-zone1-select', 'airport-zone2-select']
+                );
+
             } catch (error) {
                 document.getElementById('airport-comparison').innerHTML =
                     `<div class="error">Error loading airport data: ${error.message}</div>`;
@@ -806,6 +1388,12 @@
                 `;
 
                 document.getElementById('od-flow-analysis').innerHTML = flowHTML;
+
+                // Populate OD zone selectors for comparison - get unique origin zones
+                const allRoutesResponse = await fetch(`${API_BASE}/api/od-flows/top-routes?limit=200`);
+                const allRoutesData = await allRoutesResponse.json();
+                const uniqueOrigins = [...new Set(allRoutesData.top_routes.map(r => r.origin))].map(zone => ({ zone }));
+                populateZoneSelectors(uniqueOrigins, ['od-zone1-select', 'od-zone2-select']);
 
             } catch (error) {
                 document.getElementById('od-table').innerHTML =
