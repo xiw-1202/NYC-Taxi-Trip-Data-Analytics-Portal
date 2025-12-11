@@ -29,6 +29,23 @@ Each feature demonstrates different SQL techniques and query optimization strate
 7. **Payment & Tipping Behavior** - Conditional aggregations and behavioral analytics
 8. **Outlier & Anomaly Detection** - Percentile functions and statistical analysis
 
+### 🆕 New Features
+
+**Unified Tabbed Interface:**
+- All 8 analytical features are now consolidated into a single unified view
+- Easy navigation between features using tab buttons
+- Clean, modern UI with responsive design
+
+**Region Comparison Tool:**
+- Compare metrics between two zones side-by-side
+- Available for Zone Popularity, Airport Trips, and OD Flow Patterns
+- Interactive zone selectors with auto-populated lists
+- Detailed comparison tables showing:
+  - Individual metrics for each zone
+  - Calculated differences with color-coded indicators
+  - Key performance indicators (KPIs)
+- Real-time comparison results displayed after clicking "Compare Zones" button
+
 ---
 
 ## 📊 Database Schema Design
@@ -337,6 +354,21 @@ open frontend/index.html
 
 The frontend will connect to `http://localhost:8000` and display 8 interactive analytics features.
 
+### 🎨 Frontend Features
+
+**Unified Interface:**
+- **Tab Navigation:** Switch between 8 analytical features using tab buttons at the top
+- **Responsive Design:** Works on desktop and tablet devices
+- **Interactive Charts:** Powered by Plotly.js for dynamic visualizations
+
+**Region Comparison:**
+- **Zone Popularity Comparison:** Compare pickup counts, average fares, distances, and median fares between two zones
+- **Airport Trip Comparison:** Analyze airport trip volumes, fares, and distances by origin zone
+- **OD Flow Comparison:** Compare route patterns, trip counts, and efficiency metrics between origin zones
+- **Auto-populated Lists:** Zone selectors automatically populate with available zones from the dataset
+- **Visual Indicators:** Color-coded differences (green for higher, red for lower values)
+- **Real-time Results:** Comparison tables appear instantly after clicking the compare button
+
 ---
 
 ## 📦 Data Files
@@ -377,7 +409,7 @@ NYC-Taxi-Trip-Data-Analytics-Portal/
 │   └── main.py                     # FastAPI REST API (16 endpoints)
 │
 ├── frontend/
-│   └── index.html                  # Single-page web application
+│   └── index.html                  # Single-page web application with tabbed interface and region comparison
 │
 ├── database/
 │   ├── schema_duckdb.sql          # Complete database schema
